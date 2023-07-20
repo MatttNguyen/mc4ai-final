@@ -7,8 +7,6 @@ from datetime import datetime
 import os
 from time import process_time
 
-if os.path.exists("faces/representations_vgg_face.pkl"):
-    os.remove("faces/representations_vgg_face.pkl")
 df = pd.read_csv("timelog.csv")
 st.title("Image Processing")
 
@@ -27,6 +25,8 @@ with tab1:
             st.success("Register Done")
 
 with tab2:
+    if os.path.exists("faces/representations_vgg_face.pkl"):
+        os.remove("faces/representations_vgg_face.pkl")
     img_2 = st.camera_input("Take a picture", 1)
     if img_2 is not None:
         bytes_data_2 = img_2.getvalue()
@@ -34,9 +34,9 @@ with tab2:
         st.spinner("Please wait...")
         t1 = process_time()
         verified = DeepFace.find(cv2_img_2, "faces/")
+        t2 = process_time()
         name_verified = verified[0]["identity"][0][7:-4]
         accuracy = int((1 - verified[0]["VGG-Face_cosine"][0]) * 100)
-        t2 = process_time()
         st.success(name_verified + ": " + str(accuracy) + "%")
         st.write("Process time: " + str(round(t2 - t1, 3)) + "s")
         new_row = {"Name" : name_verified, "Time" : datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}
