@@ -31,12 +31,12 @@ with tab2:
     if img_2 is not None:
         bytes_data_2 = img_2.getvalue()
         cv2_img_2 = cv2.imdecode(np.frombuffer(bytes_data_2, np.uint8), cv2.IMREAD_COLOR)
-        st.spinner("Please wait...")
-        t1 = process_time()
-        verified = DeepFace.find(cv2_img_2, "faces/")
-        t2 = process_time()
-        name_verified = verified[0]["identity"][0][7:-4]
-        accuracy = int((1 - verified[0]["VGG-Face_cosine"][0]) * 100)
+        with st.spinner("Please wait..."):
+            t1 = process_time()
+            verified = DeepFace.find(cv2_img_2, "faces/")
+            t2 = process_time()
+            name_verified = verified[0]["identity"][0][7:-4]
+            accuracy = int((1 - verified[0]["VGG-Face_cosine"][0]) * 100)
         st.success(name_verified + ": " + str(accuracy) + "%")
         st.write("Process time: " + str(round(t2 - t1, 3)) + "s")
         new_row = {"Name" : name_verified, "Time" : datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}
